@@ -3,7 +3,7 @@ name: Bot Runner Windows (Secrets Safe)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/03 * * * *"
+    - cron: "*/30 * * * *"
 
 concurrency:
   group: bot-worker
