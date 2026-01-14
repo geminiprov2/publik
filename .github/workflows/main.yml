@@ -3,7 +3,7 @@ name: Bot Runner Windows (Secrets Safe)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/20 * * * *"
+    - cron: "*/03 * * * *"
 
 concurrency:
   group: bot-worker
@@ -12,7 +12,7 @@ concurrency:
 jobs:
   run-bot:
     runs-on: windows-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
       - name: Checkout
